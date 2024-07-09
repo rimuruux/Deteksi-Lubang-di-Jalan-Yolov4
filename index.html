@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Stream Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.3/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        header {
+            width: 100%;
+            padding: 20px;
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        #live-stream {
+            border: 2px solid #007BFF;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            margin-top: auto;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>ESP32-CAM Live Stream Dashboard</h1>
+    </header>
+    <main>
+        <img id="live-stream" src="" alt="Live Stream" width="640" height="480">
+    </main>
+    <footer>
+        <p>&copy; 2023 Live Stream Dashboard</p>
+    </footer>
+
+    <script>
+        const socket = io();
+
+        socket.on('connect', () => {
+            socket.emit('stream');
+        });
+
+        socket.on('frame', (data) => {
+            const img = document.getElementById('live-stream');
+            img.src = 'data:image/jpeg;base64,' + btoa(String.fromCharCode.apply(null, new Uint8Array(data)));
+        });
+    </script>
+</body>
+</html>
